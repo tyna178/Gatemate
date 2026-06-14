@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Ticket, Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
+import {
+  Ticket, Menu, X, LogOut, LayoutDashboard,
+  Globe, Share2
+} from 'lucide-react'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
-
   const user = JSON.parse(localStorage.getItem('user') || 'null')
 
   const handleLogout = () => {
@@ -22,98 +24,104 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all duration-300">
-              <Ticket className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold gradient-text">GateMate</span>
+    <nav
+      className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md"
+      style={{ borderBottom: '0.5px solid #e3beb8' }}
+    >
+      <div className="flex justify-between items-center px-6 py-3 max-w-[1280px] mx-auto">
+        {/* Left: Brand + Nav Links */}
+        <div className="flex items-center gap-5">
+          <Link to="/" className="text-xl font-bold text-[#b22110]">
+            GateMate
           </Link>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-white/70 hover:text-white transition-colors text-sm font-medium">
-              Beranda
+          <div className="hidden md:flex gap-6 ml-4">
+            <Link
+              to="/events"
+              className="text-sm font-bold text-[#b22110] border-b-2 border-[#b22110] pb-1"
+            >
+              Jelajahi
             </Link>
-            <Link to="/events" className="text-white/70 hover:text-white transition-colors text-sm font-medium">
-              Events
+            <Link
+              to="/"
+              className="text-sm text-[#5f5e5e] hover:text-[#b22110] transition-colors"
+            >
+              Partners
             </Link>
-            {!user ? (
-              <>
-                <Link to="/login" className="text-white/70 hover:text-white transition-colors text-sm font-medium">
-                  Masuk
-                </Link>
-                <Link to="/register" className="btn-primary text-sm py-2 px-4">
-                  Daftar
-                </Link>
-              </>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  to={getDashboardPath()}
-                  className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm font-medium"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </Link>
-                <div className="w-px h-5 bg-white/20" />
-                <div className="flex items-center gap-2">
-                  <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full ring-2 ring-indigo-500/50" />
-                  <span className="text-white/80 text-sm font-medium">{user.name.split(' ')[0]}</span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 text-white/50 hover:text-red-400 transition-colors text-sm"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            )}
           </div>
+        </div>
 
-          {/* Mobile Menu Toggle */}
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3">
+          {!user ? (
+            <>
+              <Link
+                to="/login"
+                className="hidden md:block text-sm text-[#5f5e5e] hover:text-[#271815] transition-colors font-medium"
+              >
+                Masuk
+              </Link>
+              <Link
+                to="/register"
+                className="rounded-full px-6 py-2 bg-[#b22110] text-white text-sm hover:opacity-90 active:scale-95 transition-all duration-200"
+              >
+                Daftar
+              </Link>
+            </>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                to={getDashboardPath()}
+                className="hidden md:flex items-center gap-2 text-sm text-[#5f5e5e] hover:text-[#271815] transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Link>
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-8 h-8 rounded-full"
+                style={{ border: '0.5px solid #EBEBEB' }}
+              />
+              <button
+                onClick={handleLogout}
+                className="text-[#5f5e5e] hover:text-[#b22110] transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Mobile toggle */}
           <button
-            className="md:hidden p-2 text-white/70 hover:text-white"
+            className="md:hidden p-2 text-[#5f5e5e]"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden py-4 border-t border-white/10 space-y-2 animate-fade-in">
-            <Link to="/" className="block px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => setIsOpen(false)}>
-              Beranda
-            </Link>
-            <Link to="/events" className="block px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => setIsOpen(false)}>
-              Events
-            </Link>
-            {!user ? (
-              <>
-                <Link to="/login" className="block px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => setIsOpen(false)}>
-                  Masuk
-                </Link>
-                <Link to="/register" className="block px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-all text-center" onClick={() => setIsOpen(false)}>
-                  Daftar
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to={getDashboardPath()} className="block px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => setIsOpen(false)}>
-                  Dashboard
-                </Link>
-                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
-                  Keluar
-                </button>
-              </>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <div
+          className="md:hidden py-3 px-6 space-y-1 bg-white"
+          style={{ borderTop: '0.5px solid #EBEBEB' }}
+        >
+          <Link to="/events" className="block px-3 py-2.5 text-sm font-medium text-[#b22110] hover:bg-[#fff8f6] rounded-xl" onClick={() => setIsOpen(false)}>Jelajahi</Link>
+          <Link to="/" className="block px-3 py-2.5 text-sm text-[#5f5e5e] hover:bg-[#f9f9f9] rounded-xl" onClick={() => setIsOpen(false)}>Partners</Link>
+          {!user ? (
+            <>
+              <Link to="/login" className="block px-3 py-2.5 text-sm text-[#5f5e5e] hover:bg-[#f9f9f9] rounded-xl" onClick={() => setIsOpen(false)}>Masuk</Link>
+              <Link to="/register" className="block px-3 py-2.5 text-sm text-center font-medium rounded-full bg-[#b22110] text-white hover:opacity-90" onClick={() => setIsOpen(false)}>Daftar</Link>
+            </>
+          ) : (
+            <>
+              <Link to={getDashboardPath()} className="block px-3 py-2.5 text-sm text-[#5f5e5e] hover:bg-[#f9f9f9] rounded-xl" onClick={() => setIsOpen(false)}>Dashboard</Link>
+              <button onClick={handleLogout} className="block w-full text-left px-3 py-2.5 text-sm text-[#b22110] hover:bg-[#fff8f6] rounded-xl">Keluar</button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   )
 }

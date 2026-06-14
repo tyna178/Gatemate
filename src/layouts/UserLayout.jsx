@@ -16,11 +16,11 @@ export default function UserLayout() {
   if (user.role !== 'user') return <Navigate to={`/${user.role}/dashboard`} replace />
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0e17 0%, #1a1040 50%, #0f0e17 100%)' }}>
+    <div className="flex h-screen overflow-hidden bg-[#fff8f6]">
       {/* Overlay mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          className="fixed inset-0 z-40 bg-black/30 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -33,11 +33,14 @@ export default function UserLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar Mobile */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-white/10 bg-black/20 backdrop-blur-xl">
-          <button onClick={() => setSidebarOpen(true)} className="p-2 text-white/70 hover:text-white">
+        <div
+          className="md:hidden flex items-center gap-3 px-4 py-3 bg-white"
+          style={{ borderBottom: '0.5px solid #EBEBEB' }}
+        >
+          <button onClick={() => setSidebarOpen(true)} className="p-2 text-[#271815]">
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-bold gradient-text">GateMate</span>
+          <span className="font-bold text-[#b22110]">GateMate</span>
         </div>
 
         <main className="flex-1 overflow-y-auto p-6">

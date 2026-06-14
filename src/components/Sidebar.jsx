@@ -12,64 +12,77 @@ export default function Sidebar({ navItems, title, onClose }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-black/40 backdrop-blur-xl border-r border-white/10 w-64">
+    <div
+      className="flex flex-col h-full bg-white w-64"
+      style={{ borderRight: '0.5px solid #EBEBEB' }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+      <div
+        className="flex items-center justify-between p-5"
+        style={{ borderBottom: '0.5px solid #EBEBEB' }}
+      >
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 bg-[#b22110] rounded-xl flex items-center justify-center">
             <Ticket className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="text-lg font-bold gradient-text">GateMate</span>
-            <p className="text-white/40 text-xs">{title}</p>
+            <span className="text-base font-bold text-[#b22110]">GateMate</span>
+            <p className="text-[#5f5e5e] text-xs">{title}</p>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="md:hidden p-1 text-white/50 hover:text-white">
+          <button onClick={onClose} className="md:hidden p-1 text-[#5f5e5e] hover:text-[#271815]">
             <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
       {/* User Info */}
-      <div className="p-4 mx-4 mt-4 rounded-xl glass-card">
+      <div
+        className="mx-4 mt-4 mb-2 rounded-[14px] p-3 bg-[#fff8f6]"
+        style={{ border: '0.5px solid #EBEBEB' }}
+      >
         <div className="flex items-center gap-3">
           <img
-            src={user.avatar || `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`}
+            src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name ?? 'U')}&background=b22110&color=fff`}
             alt={user.name}
-            className="w-10 h-10 rounded-full ring-2 ring-indigo-500/50"
+            className="w-9 h-9 rounded-full flex-shrink-0"
           />
-          <div>
-            <p className="text-white font-semibold text-sm">{user.name}</p>
-            <p className="text-white/40 text-xs capitalize">{user.role}</p>
+          <div className="min-w-0">
+            <p className="text-[#271815] font-semibold text-sm truncate">{user.name}</p>
+            <p className="text-[#5f5e5e] text-xs capitalize">{user.role}</p>
           </div>
         </div>
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto mt-2">
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             onClick={onClose}
             className={({ isActive }) =>
-              `sidebar-link ${isActive ? 'active' : ''}`
+              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+              ${isActive
+                ? 'bg-[#fff8f6] text-[#b22110]'
+                : 'text-[#5f5e5e] hover:bg-[#f9f9f9] hover:text-[#271815]'
+              }`
             }
           >
-            <item.icon className="w-5 h-5 flex-shrink-0" />
+            <item.icon className="w-4 h-4 flex-shrink-0" />
             <span>{item.label}</span>
           </NavLink>
         ))}
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-white/10">
+      <div className="p-3" style={{ borderTop: '0.5px solid #EBEBEB' }}>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 font-medium"
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#5f5e5e] hover:text-[#b22110] hover:bg-[#fff8f6] transition-colors duration-150"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-4 h-4" />
           <span>Keluar</span>
         </button>
       </div>
