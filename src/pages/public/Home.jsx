@@ -4,7 +4,7 @@ import {
   BarChart2, ShieldCheck, CreditCard,
   Music, Trophy, Sparkles, BookOpen, Image, Wrench,
   MapPin, Calendar, Ticket,
-  Home, Compass, Wallet, User,
+  Home as HomeIcon, Compass, Wallet, User,
 } from 'lucide-react'
 import { dummyEvents } from '../../data/dummyEvents'
 
@@ -294,6 +294,7 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* Feature Cards Duplicate */}
           <div className="grid md:grid-cols-3 gap-5">
             {features.map((f) => (
               <div
@@ -349,7 +350,7 @@ export default function Home() {
         }}
       >
         {[
-          { icon: Home,    label: 'Home',       to: '/',           active: true  },
+          { icon: HomeIcon,  label: 'Home',      to: '/',           active: true  },
           { icon: Compass, label: 'Discover',    to: '/events',     active: false },
           { icon: Ticket,  label: 'My tickets',  to: '/user/tickets', active: false },
           { icon: Wallet,  label: 'Wallet',      to: '/user/dashboard', active: false },

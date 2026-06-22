@@ -17,6 +17,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
 
   // Auto-fill demo credentials
   const demoCredential = dummyCredentials.find(c => c.role === selectedRole)
@@ -50,33 +51,28 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      {/* Background blobs */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-md relative z-10 animate-slide-up">
-        {/* Logo */}
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-6">
+      <div className="bg-white w-full max-w-[440px] rounded-[14px] border border-[#EBEBEB] p-8 md:p-10 transition-all duration-300 shadow-sm animate-slide-up">
+        {/* Logo & Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-indigo-500/30">
-            <Ticket className="w-8 h-8 text-white" />
+          <div className="w-12 h-12 bg-gradient-to-br from-[#b22110] to-[#F04E37] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#b22110]/20">
+            <Ticket className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-black text-white">Selamat Datang</h1>
-          <p className="text-white/50 text-sm mt-1">Masuk ke akun GateMate kamu</p>
+          <h1 className="text-[#271815] text-xl font-bold mb-2">Selamat Datang Kembali</h1>
+          <p className="text-[#5f5e5e] text-sm">Masuk ke akun GateMate Anda untuk melanjutkan.</p>
         </div>
 
         {/* Role Selector */}
-        <div className="glass-card p-1 flex gap-1 mb-6 rounded-2xl">
+        <div className="bg-[#F5F5F7] border border-[#EBEBEB] p-1.5 flex gap-1.5 mb-6 rounded-[12px]">
           {roles.map(role => (
             <button
               key={role.value}
+              type="button"
               onClick={() => { setSelectedRole(role.value); setError('') }}
-              className={`flex-1 flex flex-col items-center py-2.5 px-2 rounded-xl transition-all duration-200 text-xs font-medium ${
+              className={`flex-1 flex flex-col items-center py-2 px-1.5 rounded-[10px] transition-all duration-200 text-xs font-semibold ${
                 selectedRole === role.value
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/20'
-                  : 'text-white/50 hover:text-white hover:bg-white/5'
+                  ? 'bg-[#b22110] text-white shadow-sm'
+                  : 'text-[#5f5e5e] hover:text-[#271815] hover:bg-white/60'
               }`}
             >
               <role.icon className="w-4 h-4 mb-1" />
@@ -86,89 +82,118 @@ export default function Login() {
         </div>
 
         {/* Demo credentials banner */}
-        <div className="glass-card p-3 mb-6 rounded-xl border border-indigo-500/20 flex items-center justify-between">
+        <div className="bg-[#fff8f6] border border-[#f0d4cf] p-3.5 mb-6 rounded-[12px] flex items-center justify-between">
           <div>
-            <p className="text-white/60 text-xs">Demo {roles.find(r => r.value === selectedRole)?.label}:</p>
-            <p className="text-indigo-400 text-xs font-mono">{demoCredential?.email}</p>
+            <p className="text-[#5f5e5e] text-xs font-medium">Demo {roles.find(r => r.value === selectedRole)?.label}:</p>
+            <p className="text-[#b22110] text-xs font-mono font-semibold mt-0.5">{demoCredential?.email}</p>
           </div>
-          <button onClick={handleDemoLogin} className="text-xs text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg hover:bg-indigo-500/10 transition-all">
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            className="text-xs font-semibold text-[#b22110] hover:bg-[#b22110]/10 border border-[#b22110]/20 px-3 py-1.5 rounded-[8px] transition-all"
+          >
             Isi Otomatis
           </button>
         </div>
 
         {/* Form */}
-        <div className="glass-card p-8 rounded-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div>
-              <label className="text-white/70 text-sm font-medium block mb-2">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email@contoh.com"
-                  required
-                  className="input-field pl-10 w-full"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-white/70 text-sm font-medium block mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="input-field pl-10 pr-10 w-full"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-400 text-sm">
-                {error}
-              </div>
-            )}
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full justify-center flex items-center gap-2"
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
+          <div className="space-y-1.5">
+            <label
+              className={`text-xs font-semibold ml-1 transition-colors duration-200 ${
+                focusedField === 'email' ? 'text-[#b22110]' : 'text-[#5f5e5e]'
+              }`}
+              htmlFor="email"
             >
-              {loading && (
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              Email
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5f5e5e]" />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                required
+                className="w-full bg-[#F5F5F7] border border-[#EBEBEB] rounded-[10px] pl-10 pr-4 py-3 text-sm focus:border-[#b22110] transition-colors text-[#271815] outline-none"
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div className="space-y-1.5">
+            <label
+              className={`text-xs font-semibold ml-1 transition-colors duration-200 ${
+                focusedField === 'password' ? 'text-[#b22110]' : 'text-[#5f5e5e]'
+              }`}
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5f5e5e]" />
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full bg-[#F5F5F7] border border-[#EBEBEB] rounded-[10px] pl-10 pr-10 py-3 text-sm focus:border-[#b22110] transition-colors text-[#271815] outline-none"
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5f5e5e] flex items-center justify-center hover:text-[#271815] transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-[#ba1a1a]/10 border border-[#ba1a1a]/20 rounded-[10px] p-3 text-[#ba1a1a] text-xs font-medium">
+              {error}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            className="w-full bg-[#b22110] text-white py-3 rounded-full text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all mt-4 flex justify-center items-center gap-2"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-              )}
-              {loading ? 'Memproses...' : 'Masuk'}
-            </button>
-          </form>
+                Memproses...
+              </>
+            ) : (
+              'Masuk'
+            )}
+          </button>
+        </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-white/40 text-sm">
-              Belum punya akun?{' '}
-              <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
-                Daftar sekarang
-              </Link>
-            </p>
-          </div>
+        <div className="mt-8 text-center">
+          <p className="text-[#5f5e5e] text-sm">
+            Belum punya akun?
+            <Link
+              className="text-[#b22110] font-semibold hover:underline decoration-[#b22110] transition-all ml-1"
+              to="/register"
+            >
+              Daftar sekarang
+            </Link>
+          </p>
         </div>
       </div>
     </div>
