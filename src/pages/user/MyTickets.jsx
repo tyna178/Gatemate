@@ -5,7 +5,12 @@ import { dummyTickets } from '../../data/dummyTickets'
 
 export default function MyTickets() {
   const [filter, setFilter] = useState('all')
-  const filtered = dummyTickets.filter(t => filter === 'all' || t.status === filter)
+  
+  // Merge dummy tickets with purchased tickets from local storage
+  const localTickets = JSON.parse(localStorage.getItem('purchased_tickets') || '[]')
+  const allTickets = [...localTickets, ...dummyTickets]
+  
+  const filtered = allTickets.filter(t => filter === 'all' || t.status === filter)
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
@@ -20,9 +25,9 @@ export default function MyTickets() {
       {/* Filter */}
       <div className="flex gap-2">
         {[
-          { value: 'all', label: `Semua (${dummyTickets.length})` },
-          { value: 'active', label: `Aktif (${dummyTickets.filter(t => t.status === 'active').length})` },
-          { value: 'used', label: `Digunakan (${dummyTickets.filter(t => t.status === 'used').length})` },
+          { value: 'all', label: `Semua (${allTickets.length})` },
+          { value: 'active', label: `Aktif (${allTickets.filter(t => t.status === 'active').length})` },
+          { value: 'used', label: `Digunakan (${allTickets.filter(t => t.status === 'used').length})` },
         ].map(f => (
           <button
             key={f.value}
