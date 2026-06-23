@@ -1,110 +1,244 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, MapPin, Calendar, Clock, QrCode, Download, Share2, CheckCircle2 } from 'lucide-react'
-import { dummyTickets } from '../../data/dummyTickets'
-import { formatDate, formatTime, formatPrice } from '../../utils/formatDate'
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { dummyTickets } from '../../data/dummyTickets';
+import MatchmakingLoader from '../../components/modals/MatchmakingLoader';
+import VibeBioForm from '../../components/modals/VibeBioForm';
 
 export default function TicketDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const ticket = dummyTickets.find(t => t.id === id)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const ticket = dummyTickets.find(t => t.id === id);
+  const [isMatching, setIsMatching] = useState(false);
+  const [isVibeBioOpen, setIsVibeBioOpen] = useState(false);
 
   if (!ticket) {
     return (
-      <div className="text-center py-20">
-        <p className="text-white/50">Tiket tidak ditemukan</p>
-        <button onClick={() => navigate('/user/tickets')} className="btn-primary mt-4">Kembali</button>
+      <div className="text-center py-20 font-body-md text-on-surface">
+        <p className="text-secondary">Tiket tidak ditemukan</p>
+        <button onClick={() => navigate('/user/tickets')} className="bg-primary text-on-primary px-4 py-2 rounded-full mt-4">Kembali</button>
       </div>
-    )
+    );
   }
 
-  const isUsed = ticket.status === 'used'
+  const isUsed = ticket.status === 'used';
+  
+  // Format date helper
+  const formattedDate = new Date(ticket.eventDate).toLocaleDateString('id-ID', {
+    day: 'numeric', month: 'short', year: 'numeric'
+  });
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-white/60 hover:text-white group">
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Kembali
-      </button>
-
-      <h1 className="text-2xl font-black text-white">Detail Tiket</h1>
-
-      {/* Ticket Card */}
-      <div className={`glass-card rounded-2xl overflow-hidden ${isUsed ? 'opacity-70' : ''}`}>
-        {/* Event Image */}
-        <div className="relative h-48">
-          <img src={ticket.eventImage} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-          <div className="absolute bottom-4 left-4">
-            <span className={`badge ${isUsed ? 'badge-success' : 'badge-info'} flex items-center gap-1`}>
-              {isUsed ? <><CheckCircle2 className="w-3 h-3" /> Sudah Digunakan</> : '● Aktif'}
-            </span>
+    <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col absolute inset-0 z-[100] overflow-y-auto">
+      <style dangerouslySetInnerHTML={{__html: `
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      `}} />
+      
+      {/* TopNavBar */}
+      <header className="w-full top-0 sticky bg-surface border-b border-outline-variant z-50">
+        <div className="flex justify-between items-center h-16 px-container-padding max-w-[1280px] mx-auto">
+          <div className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</div>
+          <nav className="hidden md:flex gap-gap-default">
+            <button onClick={() => navigate('/user/tickets')} className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer">
+              My Tickets
+            </button>
+          </nav>
+          <div className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-secondary cursor-pointer">notifications</span>
+            <div className="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer" onClick={() => navigate('/user/profile')}>
+              <img alt="User profile avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApI86Eazw0-BsDwMowdrvP4LZhKzwjXK2oHrgGdjyqgtWRAr2_ghejs-Df9XOvJO-yOsGZYWTE93_WJXGvIvgM5akeskHXsTy4IZOSeQml_UfwwYesyrY_rhQQ5FQTfWmpytWszg9E1QwcJVv71T1JQ9n9E2s5bJw84HUa6Ph8yCDA6aEXFg0JjTZnl2AazjvEoYw3o1Q_ao8zbOy4KZ8e3r4ho2ySGjVgB68gjMJC6u5M50Py57KsjsAU87di0ka6fppu7J5gHHk" />
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Ticket Info */}
-        <div className="p-6 space-y-4">
-          <h2 className="text-xl font-bold text-white">{ticket.eventTitle}</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { icon: Calendar, text: formatDate(ticket.eventDate), color: 'text-indigo-400' },
-              { icon: Clock, text: formatTime(ticket.eventTime), color: 'text-purple-400' },
-              { icon: MapPin, text: ticket.eventLocation, color: 'text-emerald-400' },
-            ].map(item => (
-              <div key={item.text} className="glass-card p-3 flex items-center gap-2">
-                <item.icon className={`w-4 h-4 ${item.color} flex-shrink-0`} />
-                <span className="text-white/70 text-xs">{item.text}</span>
+      <main className="max-w-[1280px] mx-auto px-container-padding py-8 flex-1 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Side: Ticket QR Section */}
+          <div className="lg:col-span-7 flex flex-col gap-6">
+            {/* Event Header */}
+            <div className="flex flex-col gap-1">
+              <h1 className="font-headline-lg text-headline-lg md:text-headline-lg font-bold tracking-tight">{ticket.eventTitle}</h1>
+              <div className="flex items-center gap-4 text-secondary">
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">calendar_today</span>
+                  <span className="font-body-md text-body-md">{formattedDate}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">location_on</span>
+                  <span className="font-body-md text-body-md">{ticket.eventLocation}</span>
+                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Divider dashed */}
-          <div className="border-t border-dashed border-white/20 relative">
-            <div className="absolute -left-6 -top-3 w-6 h-6 bg-black/20 rounded-full" />
-            <div className="absolute -right-6 -top-3 w-6 h-6 bg-black/20 rounded-full" />
-          </div>
-
-          {/* QR Code */}
-          <div className="flex flex-col items-center py-4">
-            <img
-              src={ticket.qrCode}
-              alt="QR Code"
-              className={`w-40 h-40 rounded-2xl border-4 border-white/20 ${isUsed ? 'grayscale' : ''}`}
-            />
-            <p className="font-mono font-bold text-white mt-3 text-lg tracking-widest">{ticket.ticketCode}</p>
-            <p className="text-white/40 text-xs mt-1">Tunjukkan QR ini saat check-in</p>
-          </div>
-
-          {/* Details */}
-          <div className="space-y-3 border-t border-white/10 pt-4">
-            {[
-              { label: 'Kategori Tiket', value: ticket.category },
-              { label: 'Nama Peserta', value: ticket.attendeeName },
-              { label: 'Email', value: ticket.attendeeEmail },
-              ticket.seatNumber && { label: 'Nomor Kursi', value: ticket.seatNumber },
-              { label: 'Harga', value: formatPrice(ticket.price) },
-              isUsed && { label: 'Check-In Pada', value: new Date(ticket.checkedInAt).toLocaleString('id-ID') },
-            ].filter(Boolean).map(item => (
-              <div key={item.label} className="flex justify-between text-sm">
-                <span className="text-white/40">{item.label}</span>
-                <span className="text-white font-medium">{item.value}</span>
+            </div>
+            
+            {/* QR Ticket Card */}
+            <div className={`bg-white border border-[#EBEBEB] rounded-[14px] p-8 flex flex-col items-center gap-6 shadow-sm ${isUsed ? 'opacity-80 grayscale-[0.3]' : ''}`}>
+              {/* QR Placeholder / Real QR Image */}
+              <div className="w-64 h-64 bg-white border-2 border-on-surface p-4 flex items-center justify-center relative">
+                <div className="w-full h-full relative">
+                  {ticket.qrCode ? (
+                    <img src={ticket.qrCode} alt="QR Code" className="w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      {/* Fallback QR Visual */}
+                      <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-1 p-1">
+                        <div className="bg-on-surface"></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div><div></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div>
+                        <div className="bg-on-surface"></div><div></div><div className="bg-on-surface"></div><div></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div>
+                        <div className="bg-on-surface"></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div><div></div><div></div><div className="bg-on-surface"></div>
+                        <div></div><div></div><div></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div>
+                        <div className="bg-on-surface"></div><div></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div><div></div><div className="bg-on-surface"></div>
+                        <div className="bg-on-surface"></div><div className="bg-on-surface"></div><div></div><div></div><div className="bg-on-surface"></div><div className="bg-on-surface"></div>
+                      </div>
+                      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#271815 1px, transparent 0)', backgroundSize: '12px 12px' }}></div>
+                    </>
+                  )}
+                </div>
+                {/* Decorative corners */}
+                <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+                <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
               </div>
-            ))}
+              
+              <div className="text-center flex flex-col gap-2">
+                <p className="font-label-md text-label-md text-secondary tracking-widest uppercase">TICKET ID</p>
+                <p className="font-headline-sm text-headline-sm font-bold">{ticket.ticketCode || ticket.id}</p>
+              </div>
+              
+              {/* Details Section */}
+              <div className="w-full border-t border-[#EBEBEB] pt-6 grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <p className="font-caption text-caption text-secondary">Attendee</p>
+                  <p className="font-body-md text-body-md font-medium">{ticket.attendeeName}</p>
+                </div>
+                <div className="flex flex-col gap-1 text-right">
+                  <p className="font-caption text-caption text-secondary">Tier</p>
+                  <div className="flex justify-end">
+                    <span className="bg-[#FFF0EE] text-[#B83020] px-3 py-0.5 rounded-[10px] font-label-md text-label-md w-fit">
+                      {ticket.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="font-caption text-caption text-secondary">Seat/Section</p>
+                  <p className="font-body-md text-body-md font-medium">{ticket.seatNumber || '-'}</p>
+                </div>
+                <div className="flex flex-col gap-1 text-right">
+                  <p className="font-caption text-caption text-secondary">Status</p>
+                  <p className={`font-body-md text-body-md font-medium ${isUsed ? 'text-secondary' : 'text-tertiary'}`}>
+                    {isUsed ? 'Used' : 'Active'}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-2 text-on-surface-variant bg-surface-container px-4 py-3 rounded-xl w-full justify-center">
+                <span className="material-symbols-outlined text-sm">{isUsed ? 'check_circle' : 'info'}</span>
+                <p className="font-body-md text-body-md">{isUsed ? 'Tiket sudah digunakan pada ' + new Date(ticket.checkedInAt).toLocaleString('id-ID') : 'Tunjukkan QR ini ke panitia di pintu masuk'}</p>
+              </div>
+            </div>
           </div>
 
-          {/* Actions */}
-          {!isUsed && (
-            <div className="flex gap-3 pt-2">
-              <button className="btn-secondary flex items-center gap-2 text-sm flex-1 justify-center">
-                <Download className="w-4 h-4" /> Unduh
-              </button>
-              <button className="btn-secondary flex items-center gap-2 text-sm flex-1 justify-center">
-                <Share2 className="w-4 h-4" /> Bagikan
+          {/* Right Side: Networking Hub Section */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <h2 className="font-headline-md text-headline-md font-bold">Networking Hub</h2>
+            </div>
+            
+            {/* AI Vibe Bio Setup Card */}
+            <div className="bg-white border border-[#EBEBEB] rounded-[14px] p-card-padding flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="font-headline-sm text-headline-sm font-bold">AI Vibe Bio Setup</h3>
+                  <p className="font-body-md text-body-md text-secondary">Let AI craft your professional networking persona.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsVibeBioOpen(true)}
+                className="w-full bg-primary text-on-primary py-[10px] px-[22px] rounded-full font-body-md font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+              >
+                Isi Vibe Bio
               </button>
             </div>
-          )}
+
+            {/* AI Matchmaking Card */}
+            <div className="bg-[#FFF0EE] border border-outline-variant rounded-[14px] p-card-padding flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <h3 className="font-headline-sm text-headline-sm font-bold text-[#B83020]">AI Matchmaking</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant">We've found 12 potential partners for your industry.</p>
+              </div>
+              <button 
+                onClick={() => setIsMatching(true)}
+                className="w-full border border-primary text-primary py-[10px] px-[22px] rounded-full font-body-md font-medium hover:bg-primary hover:text-white transition-all"
+              >
+                Mulai Pencocokan AI
+              </button>
+            </div>
+
+            {/* Daftar Peserta Preview */}
+            <div className="flex flex-col gap-4">
+              <h3 className="font-label-md text-label-md text-secondary tracking-widest uppercase">Daftar Peserta</h3>
+              <div className="flex flex-col gap-2">
+                {[
+                  { name: 'Sarah Chen', role: 'Lead AI Architect at NeuraLink', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBuy8Mgb-y-2mtPSKihZW4SLUn5uTCNkS9AqjYy8L0ViUnjWGb_9Oq4_RGaxVTRjGYNpuCb2tktQm_yjhb1Vai5SjGuCRlgJzP8O6v9AF_AL13KZW50X3N2Hf5_nVCekYWkaAzFpPegFbYDWORkn4NwdJ-U91oyflGrxiJ2dzBfd8m0x0arQ422gCCy-MpytgKQU-tsvNCc9bhNxyp5Z78IRB4YqzUlKQriu6PxTvf7AJCr0PySPRCBH7nceXcWS-vZYywRx4R4yCs' },
+                  { name: 'Marcus Thorne', role: 'Venture Partner, Peak Capital', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDisOJq7N40c_etBWMPgGndDVCM5kvPWQ7EVTmPQ8hnsw3C2HvZZOC_l_nraVXCh6uH-iTLKG9fZjLhEIYFDCRuF3_e98nai0EUHOrc1m-CwRJzq6XrT_hDy8gKhsNjf0q_qGS17AdS9fmRyGcfR_4HhaW3RJu2GvxBASd32243LLeCVNRAFd7ufv1r-Mq8KBUciNjuGQIMV9wQQAdJfLNMGVSWkaC1Pyunv4-RHEUlrfjR-aon2Ql0Vn3d6xIZBZry87uDX5cRUJ0' },
+                  { name: 'Elena Rodriguez', role: 'CTO, GreenFlow Systems', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCas5pli3hA_YquaJZkZE_Mvjm9HXsxhBCbYEzOfnSMVCha1U0-m42S7QQl6e5CLAwiEgyekJvGLqnzaJ81gWT8_zKFviDOewnHS5ptKwb2gbnvAZzfhxwFoQ02iC_Jg7sCkqgAyKGcUvhgu66Bun6EX0vfGU9un4KB1aKKMJNyrzcCiYd4fCzyxfe1lSFBuFC7pIBMv8sqSlCcncfmN08-9D0uq4DziqaBaDd1PIZBgY9mugdj-ALy7m9UwMkgZL9TpZP0F76vh1w' }
+                ].map((p, i) => (
+                  <div key={i} className="bg-white border border-[#EBEBEB] rounded-[14px] p-3 flex items-center justify-between hover:bg-surface-container-lowest transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      <img alt={p.name} className="w-10 h-10 rounded-full object-cover" src={p.img} />
+                      <div className="flex flex-col">
+                        <p className="font-body-md text-body-md font-bold">{p.name}</p>
+                        <p className="font-caption text-caption text-secondary">{p.role}</p>
+                      </div>
+                    </div>
+                    <span className="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">chevron_right</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full mt-auto bg-surface-container-low border-t border-outline-variant pb-16 md:pb-0">
+        <div className="flex flex-col md:flex-row justify-between items-center py-8 px-container-padding max-w-[1280px] mx-auto gap-4">
+          <div className="font-headline-sm text-headline-sm font-bold text-primary">SecureGate</div>
+          <div className="flex flex-wrap justify-center gap-6">
+            <a className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+            <a className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+            <a className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Security Standards</a>
+            <a className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Us</a>
+          </div>
+          <p className="font-caption text-caption text-on-surface-variant">© 2024 SecureGate. All rights reserved.</p>
+        </div>
+      </footer>
+
+      {/* Mobile Bottom Nav */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-outline-variant px-6 py-3 flex justify-around items-center z-50">
+        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer" onClick={() => navigate('/user/dashboard')}>
+          <span className="material-symbols-outlined">explore</span>
+          <span className="text-[10px]">Explore</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 text-primary cursor-pointer" onClick={() => navigate('/user/tickets')}>
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>confirmation_number</span>
+          <span className="text-[10px] font-bold">Tickets</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer">
+          <span className="material-symbols-outlined">hub</span>
+          <span className="text-[10px]">Connect</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer">
+          <span className="material-symbols-outlined">person</span>
+          <span className="text-[10px]">Profile</span>
         </div>
       </div>
+
+      <MatchmakingLoader isOpen={isMatching} onCancel={() => setIsMatching(false)} />
+      <VibeBioForm isOpen={isVibeBioOpen} onClose={() => setIsVibeBioOpen(false)} />
     </div>
-  )
+  );
 }

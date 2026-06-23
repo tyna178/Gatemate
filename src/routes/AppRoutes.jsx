@@ -12,6 +12,10 @@ import Events from '../pages/public/Events'
 import EventDetail from '../pages/public/EventDetail'
 import Login from '../pages/public/Login'
 import Register from '../pages/public/Register'
+import AttendeeList from '../pages/events/[id]/attendees'
+import MatchmakingResults from '../pages/user/MatchmakingResults'
+import Chat from '../pages/user/Chat'
+import Profile from '../pages/user/Profile'
 
 // User Pages
 import UserDashboard from '../pages/user/UserDashboard'
@@ -33,6 +37,12 @@ import Reports from '../pages/admin/Reports'
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* Standalone Routes */}
+      <Route path="/events/:id/attendees" element={<AttendeeList />} />
+      <Route path="/user/matchmaking" element={<MatchmakingResults />} />
+      <Route path="/user/chat" element={<Chat />} />
+      <Route path="/user/profile" element={<Profile />} />
+
       {/* Public Routes */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
