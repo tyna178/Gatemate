@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, User, ChevronDown } from 'lucide-react'
 
@@ -43,7 +43,7 @@ export default function Register() {
       }
       localStorage.setItem('token', 'dummy-token-' + Date.now())
       localStorage.setItem('user', JSON.stringify(user))
-      navigate(selectedRole === 'organizer' ? '/organizer/dashboard' : '/user/dashboard')
+      navigate(selectedRole === 'organizer' ? '/organizer/dashboard' : '/')
       setLoading(false)
     }, 800)
   }
@@ -275,7 +275,7 @@ export default function Register() {
         {/* Terms check */}
         <div className="mt-8 pt-6 border-t border-[#EBEBEB] text-center">
           <p className="text-[11px] text-[#5f5e5e] px-4 leading-relaxed">
-            Dengan mendaftar, Anda menyetujui <a className="underline hover:text-[#271815]" href="#">Syarat & Ketentuan</a> serta <a className="underline hover:text-[#271815]" href="#">Kebijakan Privasi</a> SecureGate.
+            Dengan mendaftar, Anda menyetujui <a className="underline hover:text-[#271815]" href="#">Syarat & Ketentuan</a> serta <a className="underline hover:text-[#271815]" href="#">Kebijakan Privasi</a> GateMate.
           </p>
         </div>
       </div>

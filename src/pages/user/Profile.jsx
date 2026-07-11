@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/Navbar';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -55,26 +56,9 @@ export default function Profile() {
       `}} />
 
       {/* TopNavBar */}
-      <header className="bg-surface w-full top-0 sticky z-50 border-b border-outline-variant flat no-shadows">
-        <nav className="flex justify-between items-center h-16 px-container-padding max-w-[1280px] mx-auto">
-          <div className="flex items-center gap-8">
-            <span className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</span>
-            <nav className="hidden md:flex gap-6 items-center">
-              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/events')}>Explore</a>
-              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/user/tickets')}>My Tickets</a>
-              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/user/wallet')}>Support</a>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="material-symbols-outlined text-secondary hover:text-primary transition-colors cursor-pointer">notifications</button>
-            <div className="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer" onClick={() => navigate('/user/profile')}>
-              <img alt="User profile avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApI86Eazw0-BsDwMowdrvP4LZhKzwjXK2oHrgGdjyqgtWRAr2_ghejs-Df9XOvJO-yOsGZYWTE93_WJXGvIvgM5akeskHXsTy4IZOSeQml_UfwwYesyrY_rhQQ5FQTfWmpytWszg9E1QwcJVv71T1JQ9n9E2s5bJw84HUa6Ph8yCDA6aEXFg0JjTZnl2AazjvEoYw3o1Q_ao8zbOy4KZ8e3r4ho2ySGjVgB68gjMJC6u5M50Py57KsjsAU87di0ka6fppu7J5gHHk" />
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Navbar />
 
-      <main className="flex-grow w-full max-w-[1280px] mx-auto px-container-padding py-10">
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-container-padding pt-24 pb-10">
         <div className="max-w-2xl mx-auto">
           {/* Header Section */}
           <div className="mb-10 text-center">
@@ -196,8 +180,8 @@ export default function Profile() {
       <footer className="bg-surface-container-low w-full mt-auto border-t border-outline-variant flat no-shadows">
         <div className="flex flex-col md:flex-row justify-between items-center py-8 px-container-padding max-w-[1280px] mx-auto gap-6 md:gap-0">
           <div className="flex flex-col items-center md:items-start gap-2">
-            <span className="font-headline-sm text-headline-sm font-bold text-primary">SecureGate</span>
-            <span className="font-caption text-caption text-on-surface-variant">© 2024 SecureGate. All rights reserved.</span>
+            <span className="font-headline-sm text-headline-sm font-bold text-primary">GateMate</span>
+            <span className="font-caption text-caption text-on-surface-variant">© 2024 GateMate. All rights reserved.</span>
           </div>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
             <span className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms of Service</span>

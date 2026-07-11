@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+﻿import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import {
   Ticket, Menu, X, LogOut, LayoutDashboard,
@@ -21,7 +21,7 @@ export default function Navbar() {
     if (!user) return '/login'
     if (user.role === 'admin') return '/admin/dashboard'
     if (user.role === 'organizer') return '/organizer/dashboard'
-    return '/user/dashboard'
+    return '/user/tickets'
   }
 
   return (

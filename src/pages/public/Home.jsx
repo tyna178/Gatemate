@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import {
   ArrowRight,
@@ -386,7 +386,7 @@ export default function Home() {
           { icon: HomeIcon,  label: 'Home',      to: '/',           active: true  },
           { icon: Compass, label: 'Discover',    to: '/events',     active: false },
           { icon: Ticket,  label: 'My tickets',  to: '/user/tickets', active: false },
-          { icon: Wallet,  label: 'Wallet',      to: '/user/dashboard', active: false },
+          { icon: Wallet,  label: 'Wallet',      to: '/user/wallet', active: false },
           { icon: User,    label: 'Profile',     to: '/login',      active: false },
         ].map(({ icon: Icon, label, to, active }) => (
           <Link

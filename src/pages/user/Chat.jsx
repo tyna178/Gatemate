@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Chat() {
@@ -15,7 +15,7 @@ export default function Chat() {
     {
       id: 2,
       sender: 'me',
-      text: "Hi Budi! Yes, it's still available. I just uploaded the SecureGate QR for you to verify on your end.",
+      text: "Hi Budi! Yes, it's still available. I just uploaded the GateMate QR for you to verify on your end.",
       time: "10:44 AM",
     },
     {
@@ -65,7 +65,7 @@ export default function Chat() {
       {/* TopAppBar Execution */}
       <header className="bg-surface border-b-[0.5px] border-outline-variant flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50">
         <div className="flex items-center gap-8">
-          <span className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</span>
+          <span className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>GateMate</span>
           <nav className="hidden md:flex gap-6 items-center">
             <a className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer" onClick={() => navigate('/events')}>Jelajahi</a>
             <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/user/tickets')}>My Tickets</a>
@@ -207,7 +207,7 @@ export default function Chat() {
                 <span className="material-symbols-outlined text-xl" style={{fontVariationSettings: "'FILL' 1"}}>send</span>
               </button>
             </div>
-            <p className="text-[11px] text-center text-outline mt-3 font-medium">End-to-end encrypted by SecureGate Protocol</p>
+            <p className="text-[11px] text-center text-outline mt-3 font-medium">End-to-end encrypted by GateMate Protocol</p>
           </footer>
         </section>
       </main>

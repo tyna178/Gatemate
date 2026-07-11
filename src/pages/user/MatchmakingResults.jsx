@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function MatchmakingResults() {
@@ -21,7 +21,7 @@ export default function MatchmakingResults() {
       <nav className="w-full top-0 sticky z-50 glass-nav border-b border-outline-variant">
         <div className="flex justify-between items-center h-16 px-container-padding max-w-[1280px] mx-auto">
           <div className="font-headline-md text-headline-md font-extrabold text-primary cursor-pointer" onClick={() => navigate('/')}>
-            SecureGate
+            GateMate
           </div>
           <nav className="hidden md:flex gap-6 items-center">
             <a className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer" onClick={() => navigate('/events')}>Jelajahi</a>
@@ -163,8 +163,8 @@ export default function MatchmakingResults() {
       <footer className="w-full mt-auto bg-surface-container-low border-t border-outline-variant">
         <div className="flex flex-col md:flex-row justify-between items-center py-8 px-container-padding max-w-[1280px] mx-auto">
           <div className="flex flex-col mb-6 md:mb-0">
-            <div className="font-headline-sm text-headline-sm font-bold text-primary mb-2">SecureGate</div>
-            <p className="font-caption text-caption text-on-surface-variant">© 2024 SecureGate. All rights reserved.</p>
+            <div className="font-headline-sm text-headline-sm font-bold text-primary mb-2">GateMate</div>
+            <p className="font-caption text-caption text-on-surface-variant">© 2024 GateMate. All rights reserved.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-6">
             <span className="font-caption text-caption text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms of Service</span>

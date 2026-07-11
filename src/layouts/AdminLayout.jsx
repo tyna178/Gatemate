@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Outlet, Navigate, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { LogOut, Menu, X } from 'lucide-react'
 
@@ -53,7 +53,7 @@ export default function AdminLayout() {
         <div className="flex flex-col gap-8">
           <div className="px-6 flex justify-between items-center">
             <div>
-              <span className="font-headline-md text-headline-md font-bold text-primary">SecureGate</span>
+              <span className="font-headline-md text-headline-md font-bold text-primary">GateMate</span>
               <p className="text-secondary font-label-sm mt-1">Superadmin</p>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="md:hidden text-secondary hover:text-primary">
