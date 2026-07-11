@@ -1,97 +1,87 @@
 import { Link } from 'react-router-dom'
-import { MapPin, Calendar, Users, ArrowRight, Tag } from 'lucide-react'
-import { formatDate, formatPrice, soldPercentage } from '../utils/formatDate'
+import { MapPin, Calendar, Heart } from 'lucide-react'
+import { useState } from 'react'
+import { formatDate, formatPrice, remainingTickets } from '../utils/formatDate'
 
 export default function EventCard({ event }) {
-  const percentage = soldPercentage(event.maxAttendees, event.soldTickets)
-  const isAlmostFull = percentage >= 80
-  const isFull = percentage >= 100
+  const [isLiked, setIsLiked] = useState(false)
+  const remaining = remainingTickets(event.maxAttendees, event.soldTickets)
 
   return (
-    <div className="glass-card-hover overflow-hidden group">
-      {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+    <div className="bg-white border border-[#EBEBEB] rounded-[14px] overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group h-full relative">
+      {/* Clickable Image wrapper */}
+      <Link to={`/events/${event.id}`} className="relative h-48 overflow-hidden block">
         <img
           src={event.image}
           alt={event.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
 
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
-          <span className="badge badge-info text-xs">{event.category}</span>
-        </div>
-
-        {/* Price */}
-        <div className="absolute top-3 right-3">
-          <span className="bg-black/60 backdrop-blur-sm text-white font-bold text-sm px-3 py-1 rounded-xl border border-white/10">
-            {formatPrice(event.price)}
+          <span className="bg-[#fff0ee] text-[#b22110] border border-[#e3beb8]/30 px-3 py-1 rounded-[10px] text-[10px] font-bold uppercase tracking-wider">
+            {event.category}
           </span>
         </div>
+      </Link>
 
-        {/* Featured Tag */}
-        {event.featured && (
-          <div className="absolute bottom-3 left-3">
-            <span className="flex items-center gap-1 badge bg-amber-500/30 text-amber-300 border border-amber-500/30">
-              <Tag className="w-3 h-3" /> Featured
-            </span>
-          </div>
-        )}
+      {/* Floating Heart Icon (outside the link, so it doesn't trigger navigation) */}
+      <div className="absolute top-3 right-3 z-10">
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsLiked(!isLiked)
+          }}
+          className={`p-2 rounded-full border shadow-sm transition-all duration-200 ${
+            isLiked
+              ? 'bg-white border-white text-red-500 scale-105'
+              : 'bg-white/80 hover:bg-white border-white/40 text-[#5f5e5e] hover:text-[#b22110]'
+          }`}
+        >
+          <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
+        </button>
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="font-bold text-white text-base leading-tight mb-3 line-clamp-2 group-hover:text-indigo-300 transition-colors">
-          {event.title}
-        </h3>
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <Link to={`/events/${event.id}`} className="block group-hover:opacity-95">
+          {/* Info row */}
+          <div className="flex items-center gap-4 text-[#5f5e5e] text-xs font-semibold mb-2">
+            <span className="flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5 text-[#b22110]" />
+              {formatDate(event.date)}
+            </span>
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-[#b22110]" />
+              {event.city}
+            </span>
+          </div>
 
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-white/50 text-xs">
-            <Calendar className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
-            <span>{formatDate(event.date)} · {event.time} WIB</span>
-          </div>
-          <div className="flex items-center gap-2 text-white/50 text-xs">
-            <MapPin className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-            <span className="truncate">{event.location}, {event.city}</span>
-          </div>
-          <div className="flex items-center gap-2 text-white/50 text-xs">
-            <Users className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span>{event.soldTickets.toLocaleString('id-ID')} / {event.maxAttendees.toLocaleString('id-ID')} tiket</span>
-          </div>
-        </div>
+          {/* Title */}
+          <h3 className="font-bold text-[#271815] text-base leading-tight mb-4 line-clamp-2 transition-colors hover:text-[#b22110]">
+            {event.title}
+          </h3>
+        </Link>
 
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-white/40 mb-1.5">
-            <span>Tiket Tersedia</span>
-            <span className={isAlmostFull ? 'text-amber-400' : 'text-white/40'}>{percentage}% terjual</span>
+        {/* Price and Ticket Info */}
+        <div className="flex items-end justify-between pt-2 border-t border-[#EBEBEB] mt-auto">
+          <div>
+            <p className="text-[#5f5e5e] text-[11px] font-semibold mb-0.5">Mulai dari</p>
+            <span className="text-base font-extrabold text-[#b22110]">
+              {event.price === 0 ? 'Gratis' : formatPrice(event.price)}
+            </span>
           </div>
-          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                isFull ? 'bg-red-500' :
-                isAlmostFull ? 'bg-gradient-to-r from-amber-500 to-orange-500' :
-                'bg-gradient-to-r from-indigo-500 to-purple-500'
-              }`}
-              style={{ width: `${Math.min(percentage, 100)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Organizer & CTA */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src={event.organizer.avatar} alt={event.organizer.name} className="w-6 h-6 rounded-full" />
-            <span className="text-white/40 text-xs truncate max-w-[100px]">{event.organizer.name}</span>
-          </div>
-          <Link
-            to={`/events/${event.id}`}
-            className="flex items-center gap-1 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors group/btn"
-          >
-            Detail
-            <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-          </Link>
+          {remaining > 0 ? (
+            <span className="bg-[#fff0ee] text-[#b22110] border border-[#e3beb8]/20 px-2.5 py-1 rounded-[10px] text-[10px] font-bold">
+              Sisa {remaining.toLocaleString('id-ID')} Tiket
+            </span>
+          ) : (
+            <span className="bg-[#e5e2e1] text-[#5f5e5e] px-2.5 py-1 rounded-[10px] text-[10px] font-bold">
+              SOLDOUT
+            </span>
+          )}
         </div>
       </div>
     </div>
