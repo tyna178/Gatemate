@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import {
   ArrowRight,
   BarChart2, ShieldCheck, CreditCard,
   Music, Trophy, Sparkles, BookOpen, Image, Wrench,
   MapPin, Calendar, Ticket,
-  Home, Compass, Wallet, User,
+  Home as HomeIcon, Compass, Wallet, User,
 } from 'lucide-react'
 import { dummyEvents } from '../../data/dummyEvents'
 
@@ -50,7 +51,14 @@ const sisa = (event) => event.maxAttendees - event.soldTickets
 
 /* ── Component ─────────────────────────────────────── */
 export default function Home() {
-  const trendingEvents = dummyEvents.slice(0, 4)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+
+  const trendingEvents = selectedCategory
+    ? dummyEvents.filter(e => 
+        e.category.toLowerCase() === selectedCategory.toLowerCase() || 
+        (selectedCategory === 'Sport' && e.category === 'Olahraga')
+      )
+    : dummyEvents.slice(0, 4)
 
   return (
     <div className="bg-[#fff8f6] text-[#271815]">
@@ -165,42 +173,14 @@ export default function Home() {
       </section>
 
       {/* ════════════════════════════════════════════
-          SECTION 3 — Kategori
-      ════════════════════════════════════════════ */}
-      <section className="bg-white py-16 transition-all duration-700">
-        <div className="max-w-[1280px] mx-auto px-6">
-          <div className="flex justify-between items-end mb-8">
-            <div>
-              <h2 className="text-xl font-semibold text-[#271815]">Kategori</h2>
-              <p className="text-sm text-[#5f5e5e] mt-1">Cari berdasarkan minat dan hobi Anda</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-            {categories.map(({ icon: Icon, label }) => (
-              <Link
-                key={label}
-                to={`/events?category=${label}`}
-                className="group flex flex-col items-center gap-3 p-6 bg-white rounded-[14px] hover:border-[#b22110] transition-all cursor-pointer"
-                style={{ border: '0.5px solid #EBEBEB' }}
-              >
-                <div className="w-14 h-14 rounded-full bg-[#fff0ee] flex items-center justify-center text-[#b22110] group-hover:scale-110 transition-transform">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <span className="text-sm font-medium text-[#271815]">{label}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════
-          SECTION 4 — Trending Sekarang
+          SECTION 3 — Trending Sekarang (Dipindah ke atas)
       ════════════════════════════════════════════ */}
       <section className="py-16 overflow-hidden transition-all duration-700">
         <div className="max-w-[1280px] mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-semibold text-[#271815]">Trending sekarang</h2>
+            <h2 className="text-xl font-semibold text-[#271815]">
+              Trending sekarang {selectedCategory && `- ${selectedCategory}`}
+            </h2>
             <Link
               to="/events"
               className="text-xs font-medium text-[#b22110] hover:underline"
@@ -214,56 +194,109 @@ export default function Home() {
             className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {trendingEvents.map((event) => (
-              <Link
-                key={event.id}
-                to={`/events/${event.id}`}
-                className="min-w-[280px] md:min-w-[320px] bg-white rounded-[14px] overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow flex-shrink-0"
-                style={{ border: '0.5px solid #EBEBEB' }}
-              >
-                {/* Image */}
-                <div className="h-48 relative overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div
-                    className="absolute top-3 right-3 px-2 py-1 rounded-[10px]"
-                    style={{ background: 'rgba(255,248,246,0.9)', backdropFilter: 'blur(4px)' }}
-                  >
-                    <span className="text-[11px] font-bold text-[#b22110]">Trending</span>
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="p-3 flex flex-col gap-2">
-                  <h3 className="text-base font-semibold text-[#271815] line-clamp-1">{event.title}</h3>
-                  <div className="flex items-center gap-1 text-[#5f5e5e]">
-                    <MapPin className="w-4 h-4" />
-                    <span className="text-sm">{event.city}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[#5f5e5e]">
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-sm">{formatDate(event.date)}</span>
-                  </div>
-                  <div
-                    className="mt-2 pt-2 flex justify-between items-center"
-                    style={{ borderTop: '0.5px solid rgba(227,190,184,0.3)' }}
-                  >
-                    <span className="text-base font-semibold text-[#b22110]">
-                      {formatPrice(event.price)}
-                    </span>
-                    <span
-                      className="px-2 py-1 rounded-[10px] text-[11px] font-medium text-[#b22110]"
-                      style={{ background: '#fff0ee' }}
+            {trendingEvents.length > 0 ? (
+              trendingEvents.map((event) => (
+                <Link
+                  key={event.id}
+                  to={`/events/${event.id}`}
+                  className="min-w-[280px] md:min-w-[320px] bg-white rounded-[14px] overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow flex-shrink-0"
+                  style={{ border: '0.5px solid #EBEBEB' }}
+                >
+                  {/* Image */}
+                  <div className="h-48 relative overflow-hidden">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div
+                      className="absolute top-3 right-3 px-2 py-1 rounded-[10px]"
+                      style={{ background: 'rgba(255,248,246,0.9)', backdropFilter: 'blur(4px)' }}
                     >
-                      Sisa {sisa(event)}
-                    </span>
+                      <span className="text-[11px] font-bold text-[#b22110]">Trending</span>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+
+                  {/* Info */}
+                  <div className="p-3 flex flex-col gap-2">
+                    <h3 className="text-base font-semibold text-[#271815] line-clamp-1">{event.title}</h3>
+                    <div className="flex items-center gap-1 text-[#5f5e5e]">
+                      <MapPin className="w-4 h-4" />
+                      <span className="text-sm">{event.city}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[#5f5e5e]">
+                      <Calendar className="w-4 h-4" />
+                      <span className="text-sm">{formatDate(event.date)}</span>
+                    </div>
+                    <div
+                      className="mt-2 pt-2 flex justify-between items-center"
+                      style={{ borderTop: '0.5px solid rgba(227,190,184,0.3)' }}
+                    >
+                      <span className="text-base font-semibold text-[#b22110]">
+                        {formatPrice(event.price)}
+                      </span>
+                      <span
+                        className="px-2 py-1 rounded-[10px] text-[11px] font-medium text-[#b22110]"
+                        style={{ background: '#fff0ee' }}
+                      >
+                        Sisa {sisa(event)}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="text-sm text-[#5f5e5e] px-2 py-4">Belum ada event trending untuk kategori ini.</div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 4 — Kategori (Dipindah ke bawah)
+      ════════════════════════════════════════════ */}
+      <section className="bg-white py-16 transition-all duration-700">
+        <div className="max-w-[1280px] mx-auto px-6">
+          <div className="flex justify-between items-end mb-8">
+            <div>
+              <h2 className="text-xl font-semibold text-[#271815]">Kategori</h2>
+              <p className="text-sm text-[#5f5e5e] mt-1">Cari berdasarkan minat dan hobi Anda</p>
+            </div>
+            {selectedCategory && (
+              <button 
+                onClick={() => setSelectedCategory(null)}
+                className="text-xs font-medium text-[#b22110] hover:underline"
+              >
+                Reset Filter
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+            {categories.map(({ icon: Icon, label }) => {
+              const isSelected = selectedCategory === label
+              return (
+                <button
+                  key={label}
+                  onClick={() => setSelectedCategory(isSelected ? null : label)}
+                  className={`group flex flex-col items-center gap-3 p-6 rounded-[14px] transition-all cursor-pointer ${
+                    isSelected 
+                      ? 'bg-[#fff0ee] border-[#b22110]' 
+                      : 'bg-white border-[#EBEBEB] hover:border-[#b22110]'
+                  }`}
+                  style={{ border: `0.5px solid ${isSelected ? '#b22110' : '#EBEBEB'}` }}
+                >
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-transform ${
+                    isSelected 
+                      ? 'bg-[#b22110] text-white' 
+                      : 'bg-[#fff0ee] text-[#b22110] group-hover:scale-110'
+                  }`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <span className={`text-sm font-medium ${isSelected ? 'text-[#b22110]' : 'text-[#271815]'}`}>{label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -294,6 +327,7 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* Feature Cards Duplicate */}
           <div className="grid md:grid-cols-3 gap-5">
             {features.map((f) => (
               <div
@@ -349,7 +383,7 @@ export default function Home() {
         }}
       >
         {[
-          { icon: Home,    label: 'Home',       to: '/',           active: true  },
+          { icon: HomeIcon,  label: 'Home',      to: '/',           active: true  },
           { icon: Compass, label: 'Discover',    to: '/events',     active: false },
           { icon: Ticket,  label: 'My tickets',  to: '/user/tickets', active: false },
           { icon: Wallet,  label: 'Wallet',      to: '/user/dashboard', active: false },

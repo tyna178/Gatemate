@@ -39,8 +39,12 @@ export default function Sidebar({ navItems, title, onClose }) {
 
       {/* User Info */}
       <div
-        className="mx-4 mt-4 mb-2 rounded-[14px] p-3 bg-[#fff8f6]"
+        className="mx-4 mt-4 mb-2 rounded-[14px] p-3 bg-[#fff8f6] cursor-pointer hover:bg-[#ffe9e5] transition-colors"
         style={{ border: '0.5px solid #EBEBEB' }}
+        onClick={() => {
+          navigate('/user/profile');
+          if (onClose) onClose();
+        }}
       >
         <div className="flex items-center gap-3">
           <img
