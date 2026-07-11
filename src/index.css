@@ -156,3 +156,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #F04E37;
 }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

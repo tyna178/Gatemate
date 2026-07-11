@@ -1,60 +1,156 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PlusCircle, Edit, Trash2, Eye } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { dummyEvents } from '../../data/dummyEvents'
-import { formatDate, formatPrice, soldPercentage } from '../../utils/formatDate'
+import { formatDate } from '../../utils/formatDate'
 
 export default function ManageEvents() {
-  const events = dummyEvents.slice(0, 4)
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('Semua') // Semua, Active, Draft
+
+  // Simulate active vs draft for display purposes
+  const events = dummyEvents.map((e, index) => ({
+    ...e,
+    mockStatus: index === 1 ? 'Draft' : index === 2 ? 'Ended' : 'Active'
+  }))
+
+  const filteredEvents = events.filter(e => {
+    const matchSearch = e.title.toLowerCase().includes(search.toLowerCase()) || e.location.toLowerCase().includes(search.toLowerCase())
+    const matchFilter = filter === 'Semua' || e.mockStatus === filter
+    return matchSearch && matchFilter
+  })
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="max-w-[1200px] mx-auto space-y-[24px] animate-fade-in bg-[#fbf9f8] min-h-full">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white">Kelola Event</h1>
-          <p className="text-white/50 text-sm mt-1">Lihat dan kelola semua event yang kamu buat</p>
+          <h2 className="text-[32px] leading-10 tracking-tight font-medium text-[#1b1c1c]">Event Saya</h2>
+          <p className="text-[14px] leading-5 text-[#5f5e5e] mt-1">Kelola semua tiket dan jadwal acara Anda di sini.</p>
         </div>
-        <Link to="/organizer/events/create" className="btn-primary flex items-center gap-2 text-sm">
-          <PlusCircle className="w-4 h-4" /> Buat Event Baru
+        <Link 
+          to="/organizer/events/create"
+          className="inline-flex items-center justify-center space-x-2 bg-[#d63b27] text-[#fffbff] px-6 py-2.5 rounded-lg hover:opacity-90 active:scale-95 transition-all shadow-none"
+        >
+          <Plus className="w-5 h-5 font-bold" />
+          <span className="text-[12px] font-bold uppercase tracking-wider">+ Buat Event Baru</span>
         </Link>
       </div>
 
-      <div className="space-y-4">
-        {events.map(event => {
-          const pct = soldPercentage(event.maxAttendees, event.soldTickets)
-          return (
-            <div key={event.id} className="glass-card p-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
-              <img src={event.image} alt="" className="w-20 h-20 rounded-2xl object-cover" />
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h3 className="text-white font-bold">{event.title}</h3>
-                  <span className="badge badge-info text-xs">{event.category}</span>
-                </div>
-                <p className="text-white/40 text-xs mb-2">{formatDate(event.date)} · {event.location}</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-indigo-400 font-bold text-sm">{formatPrice(event.price)}</span>
-                  <span className="text-white/40 text-xs">{event.soldTickets}/{event.maxAttendees} tiket</span>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style={{ width: `${pct}%` }} />
-                    </div>
-                    <span className="text-white/30 text-xs">{pct}%</span>
+      {/* Bento Filter Bar */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="col-span-1 md:col-span-2 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f706a]" />
+          <input 
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari nama event..." 
+            className="w-full bg-[#f5f3f3] border-[0.5px] border-[#e3beb8] rounded-lg pl-10 pr-4 py-2 text-[14px] text-[#1b1c1c] focus:border-[#d63b27] focus:ring-0 transition-colors outline-none"
+          />
+        </div>
+        <div className="flex space-x-2 overflow-x-auto pb-1 md:col-span-2">
+          {['Semua', 'Active', 'Draft'].map(f => (
+            <button 
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-2 rounded-lg text-[12px] font-medium shrink-0 transition-colors ${
+                filter === f 
+                  ? 'bg-[#b22110] text-[#ffffff]' 
+                  : 'bg-[#fbf9f8] border-[0.5px] border-[#e3beb8] text-[#5f5e5e] hover:bg-[#efeded]'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Events Table Container */}
+      <div className="bg-[#fbf9f8] border-[0.5px] border-[#e3beb8] rounded-xl overflow-hidden overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[800px]">
+          <thead className="bg-[#f5f3f3] border-b-[0.5px] border-[#e3beb8]">
+            <tr>
+              {['Poster', 'Nama Event', 'Kategori', 'Tanggal', 'Status', 'Aksi'].map((header, index) => (
+                <th key={header} className={`px-6 py-4 text-[12px] font-medium text-[#5f5e5e] uppercase tracking-tight ${index === 5 ? 'text-right' : ''}`}>
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y-[0.5px] divide-[#e3beb8]">
+            {filteredEvents.map(event => (
+              <tr 
+                key={event.id} 
+                className={`hover:bg-[#ffffff] transition-colors ${event.mockStatus === 'Ended' ? 'opacity-70' : ''}`}
+              >
+                <td className="px-6 py-4">
+                  <div className={`w-12 h-16 rounded overflow-hidden bg-[#e9e8e7] ${event.mockStatus === 'Ended' ? 'grayscale' : ''}`}>
+                    <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
                   </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link to={`/events/${event.id}`} className="p-2.5 glass-card hover:bg-white/10 rounded-xl transition-all text-white/60 hover:text-white">
-                  <Eye className="w-4 h-4" />
-                </Link>
-                <button className="p-2.5 glass-card hover:bg-white/10 rounded-xl transition-all text-white/60 hover:text-indigo-400">
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button className="p-2.5 glass-card hover:bg-red-500/10 rounded-xl transition-all text-white/60 hover:text-red-400">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )
-        })}
+                </td>
+                <td className="px-6 py-4">
+                  <p className="text-[14px] font-bold text-[#1b1c1c]">{event.title}</p>
+                  <p className="text-[11px] text-[#5f5e5e]">{event.location}</p>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="bg-[#e9e8e7] px-2 py-1 rounded text-[11px] text-[#5b403c]">{event.category}</span>
+                </td>
+                <td className="px-6 py-4">
+                  <p className="text-[14px] text-[#1b1c1c]">{formatDate(event.date)}</p>
+                  <p className="text-[11px] text-[#5f5e5e]">{event.time} WIB</p>
+                </td>
+                <td className="px-6 py-4">
+                  {event.mockStatus === 'Active' && (
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">Active</span>
+                  )}
+                  {event.mockStatus === 'Draft' && (
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#e4e2e2] text-[#5f5e5e]">Draft</span>
+                  )}
+                  {event.mockStatus === 'Ended' && (
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#ffdad6] text-[#ba1a1a]">Ended</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <div className="flex justify-end space-x-1">
+                    <Link to={`/events/${event.id}`} className="p-2 text-[#b22110] hover:bg-[#ffdad4] rounded transition-colors" title="Detail">
+                      <Eye className="w-[18px] h-[18px]" />
+                    </Link>
+                    <button className="p-2 text-[#b22110] hover:bg-[#ffdad4] rounded transition-colors" title="Edit">
+                      <Edit className="w-[18px] h-[18px]" />
+                    </button>
+                    <button className="p-2 text-[#ba1a1a] hover:bg-[#ffdad6] rounded transition-colors" title="Hapus">
+                      <Trash2 className="w-[18px] h-[18px]" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {filteredEvents.length === 0 && (
+              <tr>
+                <td colSpan="6" className="px-6 py-12 text-center text-[#5f5e5e] text-[14px]">
+                  Tidak ada event yang ditemukan.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 flex items-center justify-between border-t-[0.5px] border-[#e3beb8] pt-4">
+        <span className="text-[11px] text-[#5f5e5e]">Menampilkan 1-{filteredEvents.length} dari {events.length} Event</span>
+        <div className="flex space-x-2">
+          <button className="p-2 border-[0.5px] border-[#e3beb8] rounded-lg hover:bg-[#efeded] transition-colors disabled:opacity-30" disabled>
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button className="px-4 py-2 bg-[#ffdad4] text-[#b22110] font-bold rounded-lg text-[12px]">1</button>
+          <button className="px-4 py-2 hover:bg-[#efeded] rounded-lg text-[12px] transition-colors">2</button>
+          <button className="px-4 py-2 hover:bg-[#efeded] rounded-lg text-[12px] transition-colors">3</button>
+          <button className="p-2 border-[0.5px] border-[#e3beb8] rounded-lg hover:bg-[#efeded] transition-colors">
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   )
