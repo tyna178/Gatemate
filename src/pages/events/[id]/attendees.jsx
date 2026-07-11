@@ -63,8 +63,8 @@ export default function AttendeeList() {
           </div>
           <div className="hidden md:flex gap-8 items-center">
             <span className="text-secondary font-body-md text-body-md hover:text-primary transition-colors cursor-pointer active:opacity-80">Explore</span>
-            <span className="font-body-md text-body-md hover:text-primary transition-colors cursor-pointer active:opacity-80 text-primary font-bold border-b-2 border-primary pb-1">My Tickets</span>
-            <span className="font-body-md text-body-md transition-colors cursor-pointer active:opacity-80 text-secondary" style={{ opacity: 0 }}>Wallet</span>
+            <span className="font-body-md text-body-md hover:text-primary transition-colors cursor-pointer active:opacity-80 text-primary font-bold border-b-2 border-primary pb-1" onClick={() => navigate('/user/tickets')}>My Tickets</span>
+            <span className="font-body-md text-body-md transition-colors cursor-pointer active:opacity-80 text-secondary">Wallet</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="material-symbols-outlined text-secondary cursor-pointer hover:text-primary">notifications</span>
@@ -128,7 +128,10 @@ export default function AttendeeList() {
                   <p className="text-on-surface-variant text-body-md truncate">{attendee.bio}</p>
                 </div>
               </div>
-              <button className="flex-shrink-0 sm:ml-4 px-6 py-2.5 border border-primary text-primary rounded-[22px] font-label-md hover:bg-primary-container hover:text-on-primary-container transition-all active:opacity-80 w-full sm:w-auto">
+              <button
+                onClick={() => navigate('/user/chat')}
+                className="flex-shrink-0 sm:ml-4 px-6 py-2.5 border border-primary text-primary rounded-[22px] font-label-md hover:bg-primary-container hover:text-on-primary-container transition-all active:opacity-80 w-full sm:w-auto"
+              >
                 Say Hello
               </button>
             </div>

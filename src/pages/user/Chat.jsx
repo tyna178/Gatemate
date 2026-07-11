@@ -66,11 +66,10 @@ export default function Chat() {
       <header className="bg-surface border-b-[0.5px] border-outline-variant flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50">
         <div className="flex items-center gap-8">
           <span className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</span>
-          <nav className="hidden md:flex gap-6">
-            <span className="text-secondary hover:bg-surface-container-low cursor-pointer transition-colors duration-200 font-label-md text-label-md px-3 py-2 rounded-lg">Explore</span>
-            <span className="text-secondary hover:bg-surface-container-low cursor-pointer transition-colors duration-200 font-label-md text-label-md px-3 py-2 rounded-lg" onClick={() => navigate('/user/tickets')}>My Tickets</span>
-            <span className="text-secondary hover:bg-surface-container-low cursor-pointer transition-colors duration-200 font-label-md text-label-md px-3 py-2 rounded-lg">Wallet</span>
-            <span className="text-primary font-bold cursor-pointer transition-all font-label-md text-label-md px-3 py-2 rounded-lg bg-surface-container-low">Chat</span>
+          <nav className="hidden md:flex gap-6 items-center">
+            <a className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer" onClick={() => navigate('/events')}>Jelajahi</a>
+            <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/user/tickets')}>My Tickets</a>
+            <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/user/wallet')}>Wallet</a>
           </nav>
         </div>
         <div className="flex items-center gap-4">

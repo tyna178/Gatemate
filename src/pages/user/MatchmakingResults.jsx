@@ -23,17 +23,17 @@ export default function MatchmakingResults() {
           <div className="font-headline-md text-headline-md font-extrabold text-primary cursor-pointer" onClick={() => navigate('/')}>
             SecureGate
           </div>
-          <div className="hidden md:flex gap-8 items-center">
-            <span className="font-body-md text-body-md cursor-pointer text-secondary hover:text-primary transition-colors">Explore</span>
-            <span className="font-body-md text-body-md hover:text-primary transition-colors cursor-pointer font-bold border-b-2 border-primary pb-1 text-primary" onClick={() => navigate('/user/tickets')}>My Tickets</span>
-            <span className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer">Wallet</span>
-          </div>
+          <nav className="hidden md:flex gap-6 items-center">
+            <a className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer" onClick={() => navigate('/events')}>Jelajahi</a>
+            <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/user/tickets')}>My Tickets</a>
+            <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/user/wallet')}>Wallet</a>
+          </nav>
           <div className="flex items-center gap-4">
-          <button className="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
-          <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer" onClick={() => navigate('/user/profile')}>
-            <img alt="User profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZpZKCnyhiUMWXOhqjrFoVoGqtGLhdUJUSoIKjuh1m3KGnstR1ml3wjoSgOIQq9MRxhjK8M-SdaceyufjDxUygqrZgn7Gc9QBXz8j5MPSNxiFAgcqw13h4zsKihBr1-5ZodOhn2yVtwkfykbN3ubvikcRUEyDPexxoM3WZOrjDRdjnvyBugldPCDx4luR1MlDcv-wuJCD5x07ftAkUEojEAQ0mFPx0pKE3LC8wZkBji2dlCM9d1JWKvsLyagwssXLtluET7dNCiHE"/>
+            <button className="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
+            <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer" onClick={() => navigate('/user/profile')}>
+              <img alt="User profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZpZKCnyhiUMWXOhqjrFoVoGqtGLhdUJUSoIKjuh1m3KGnstR1ml3wjoSgOIQq9MRxhjK8M-SdaceyufjDxUygqrZgn7Gc9QBXz8j5MPSNxiFAgcqw13h4zsKihBr1-5ZodOhn2yVtwkfykbN3ubvikcRUEyDPexxoM3WZOrjDRdjnvyBugldPCDx4luR1MlDcv-wuJCD5x07ftAkUEojEAQ0mFPx0pKE3LC8wZkBji2dlCM9d1JWKvsLyagwssXLtluET7dNCiHE"/>
+            </div>
           </div>
-        </div>
         </div>
       </nav>
 
@@ -149,7 +149,10 @@ export default function MatchmakingResults() {
               <h4 className="font-headline-sm text-headline-sm text-on-surface mb-1">Bukan yang Anda cari?</h4>
               <p className="font-body-md text-body-md text-on-surface-variant">Update preferensi minat Anda untuk hasil pencocokan yang lebih akurat.</p>
             </div>
-            <button className="whitespace-nowrap px-8 py-3 bg-primary text-on-primary font-bold rounded-full hover:opacity-90 active:scale-95 transition-all">
+            <button
+              onClick={() => navigate('/user/profile')}
+              className="whitespace-nowrap px-8 py-3 bg-primary text-on-primary font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
+            >
               Perbarui Preferensi
             </button>
           </div>

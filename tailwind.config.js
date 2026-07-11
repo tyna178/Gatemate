@@ -54,8 +54,11 @@ export default {
         "tertiary-fixed": "#b2ebff",
         "outline-variant": "#e3beb8",
         "secondary-fixed": "#e5e2e1",
-        "coral-red": "#f04E37",
-        "divider": "#ebebeb",
+        "coral-red": "#F04E37",
+        "coral-light": "#FFF0EE",
+        "coral-dark": "#B83020",
+        "divider": "#EBEBEB",
+        "surface-f5": "#F5F5F7",
       },
       borderRadius: {
         "DEFAULT": "0.25rem",
@@ -67,7 +70,13 @@ export default {
         "container-padding": "1.5rem",
         "gap-tight": "1rem",
         "gap-default": "1.25rem",
-        "card-padding": "0.75rem"
+        "card-padding": "0.75rem",
+        "stack-lg": "32px",
+        "stack-md": "16px",
+        "stack-sm": "8px",
+        "gutter": "24px",
+        "sidebar-width": "240px",
+        "content-max-width": "1200px"
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -88,7 +97,9 @@ export default {
         "body-lg": ["15px", {"lineHeight": "1.6", "fontWeight": "400"}],
         "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "500"}],
         "label-md": ["12px", {"lineHeight": "1.1", "fontWeight": "500"}],
-        "headline-sm": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}]
+        "headline-sm": ["16px", {"lineHeight": "1.4", "fontWeight": "500"}],
+        "headline-xl": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

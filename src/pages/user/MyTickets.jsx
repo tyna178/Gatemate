@@ -16,17 +16,14 @@ export default function MyTickets() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
       {/* Header & Segmented Control */}
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-black text-[#271815] flex items-center gap-2">
-          <Ticket className="w-6 h-6 text-[#b22110]" />
-          Tiket Saya
-        </h1>
+      <div className="flex flex-col gap-6 mb-10">
+        <h1 className="text-[32px] font-bold text-[#271815]">My Tickets</h1>
         <div className="flex gap-8 border-b border-[#EBEBEB]">
           <button
             onClick={() => setFilter('active')}
-            className={`pb-3 text-sm font-semibold transition-all relative ${
+            className={`pb-3 transition-all ${
               filter === 'active'
-                ? 'text-[#b22110] border-b-2 border-[#b22110]'
+                ? 'text-[#b22110] font-bold border-b-2 border-[#b22110]'
                 : 'text-[#5f5e5e] hover:text-[#271815]'
             }`}
           >
@@ -34,9 +31,9 @@ export default function MyTickets() {
           </button>
           <button
             onClick={() => setFilter('used')}
-            className={`pb-3 text-sm font-semibold transition-all relative ${
+            className={`pb-3 transition-all ${
               filter === 'used'
-                ? 'text-[#b22110] border-b-2 border-[#b22110]'
+                ? 'text-[#b22110] font-bold border-b-2 border-[#b22110]'
                 : 'text-[#5f5e5e] hover:text-[#271815]'
             }`}
           >
@@ -48,19 +45,21 @@ export default function MyTickets() {
       {/* Ticket List Container */}
       <div className="space-y-4">
         {/* Section Sub-header */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-[#5f5e5e] uppercase tracking-wider">
-            {filter === 'active' ? 'Upcoming Events' : 'Past History'}
-          </span>
-          {filter === 'active' && (
-            <span className="text-xs font-semibold text-[#b22110]">
-              {activeCount} Aktif
+        {filtered.length > 0 && (
+          <div className="flex items-center justify-between col-span-full mt-4">
+            <span className="text-xs font-medium text-[#5f5e5e] uppercase tracking-wider">
+              {filter === 'active' ? 'Upcoming Events' : 'Past History'}
             </span>
-          )}
-        </div>
+            {filter === 'active' && (
+              <span className="text-xs font-medium text-[#b22110]">
+                {activeCount} Active
+              </span>
+            )}
+          </div>
+        )}
 
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(ticket => (
               <TicketCard key={ticket.id} ticket={ticket} />
             ))}

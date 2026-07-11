@@ -28,30 +28,14 @@ export default function TicketDetail() {
   });
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col absolute inset-0 z-[100] overflow-y-auto">
+    <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
       <style dangerouslySetInnerHTML={{__html: `
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
       `}} />
       
-      {/* TopNavBar */}
-      <header className="w-full top-0 sticky bg-surface border-b border-outline-variant z-50">
-        <div className="flex justify-between items-center h-16 px-container-padding max-w-[1280px] mx-auto">
-          <div className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</div>
-          <nav className="hidden md:flex gap-gap-default">
-            <button onClick={() => navigate('/user/tickets')} className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer">
-              My Tickets
-            </button>
-          </nav>
-          <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-secondary cursor-pointer">notifications</span>
-            <div className="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer" onClick={() => navigate('/user/profile')}>
-              <img alt="User profile avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApI86Eazw0-BsDwMowdrvP4LZhKzwjXK2oHrgGdjyqgtWRAr2_ghejs-Df9XOvJO-yOsGZYWTE93_WJXGvIvgM5akeskHXsTy4IZOSeQml_UfwwYesyrY_rhQQ5FQTfWmpytWszg9E1QwcJVv71T1JQ9n9E2s5bJw84HUa6Ph8yCDA6aEXFg0JjTZnl2AazjvEoYw3o1Q_ao8zbOy4KZ8e3r4ho2ySGjVgB68gjMJC6u5M50Py57KsjsAU87di0ka6fppu7J5gHHk" />
-            </div>
-          </div>
-        </div>
-      </header>
+      
 
       <main className="max-w-[1280px] mx-auto px-container-padding py-8 flex-1 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -227,11 +211,11 @@ export default function TicketDetail() {
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>confirmation_number</span>
           <span className="text-[10px] font-bold">Tickets</span>
         </div>
-        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer">
+        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer" onClick={() => navigate(`/events/${id}/attendees`)}>
           <span className="material-symbols-outlined">hub</span>
           <span className="text-[10px]">Connect</span>
         </div>
-        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer">
+        <div className="flex flex-col items-center gap-1 text-secondary cursor-pointer" onClick={() => navigate('/user/profile')}>
           <span className="material-symbols-outlined">person</span>
           <span className="text-[10px]">Profile</span>
         </div>

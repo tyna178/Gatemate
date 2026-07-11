@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const fileInputRef = useRef(null);
+  const [avatarSrc, setAvatarSrc] = useState(
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBIzE_vnXaV1jDXsMtrnybIiDmvUurdy0R_DASaQkRMpqa0SeIYTS6basGwLluhXnATH70jDgGauoCMl9e4FkdJazgXK-pOTn8O9yApWtfVAEmBGvC2-9rWO47BXCF65AJwP_U3rnIX-Ke6g0JojCVSAXWvU3GSM9UVapjx9YB_Q5b-v9pORBmqr3G0ic-U2Cw-P45LpFvNngM2PneOqSvkgjVKwdKX2x69cnpFvAFIrpTz1WIqn9aWqFOxX1EjF9F-gYlzEuZyVrg'
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +23,21 @@ export default function Profile() {
         setIsSaved(false);
       }, 2000);
     }, 1500);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setAvatarSrc(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -40,11 +59,11 @@ export default function Profile() {
         <nav className="flex justify-between items-center h-16 px-container-padding max-w-[1280px] mx-auto">
           <div className="flex items-center gap-8">
             <span className="font-headline-md text-headline-md font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>SecureGate</span>
-            <div className="hidden md:flex gap-6 items-center">
-              <span className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80">Explore</span>
-              <span className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/user/tickets')}>My Tickets</span>
-              <span className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80">Support</span>
-            </div>
+            <nav className="hidden md:flex gap-6 items-center">
+              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/events')}>Explore</a>
+              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/user/tickets')}>My Tickets</a>
+              <a className="font-body-md text-body-md text-secondary hover:text-primary transition-colors cursor-pointer active:opacity-80" onClick={() => navigate('/user/wallet')}>Support</a>
+            </nav>
           </div>
           <div className="flex items-center gap-4">
             <button className="material-symbols-outlined text-secondary hover:text-primary transition-colors cursor-pointer">notifications</button>
@@ -65,19 +84,37 @@ export default function Profile() {
 
           {/* Avatar Section */}
           <div className="flex flex-col items-center mb-10 group">
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
             <div className="relative w-32 h-32 mb-4">
               <div className="w-full h-full rounded-full overflow-hidden border-2 border-primary-fixed p-1 bg-surface-container-lowest">
                 <img 
                   className="w-full h-full rounded-full object-cover transition-opacity group-hover:opacity-80" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIzE_vnXaV1jDXsMtrnybIiDmvUurdy0R_DASaQkRMpqa0SeIYTS6basGwLluhXnATH70jDgGauoCMl9e4FkdJazgXK-pOTn8O9yApWtfVAEmBGvC2-9rWO47BXCF65AJwP_U3rnIX-Ke6g0JojCVSAXWvU3GSM9UVapjx9YB_Q5b-v9pORBmqr3G0ic-U2Cw-P45LpFvNngM2PneOqSvkgjVKwdKX2x69cnpFvAFIrpTz1WIqn9aWqFOxX1EjF9F-gYlzEuZyVrg" 
+                  src={avatarSrc}
                   alt="Profile Preview"
                 />
               </div>
-              <button className="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all"
+              >
                 <span className="material-symbols-outlined text-[18px]">edit</span>
               </button>
             </div>
-            <button className="font-label-md text-label-md text-primary font-bold hover:underline transition-all group-hover:opacity-80">Ganti Foto</button>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="font-label-md text-label-md text-primary font-bold hover:underline transition-all group-hover:opacity-80"
+            >
+              Ganti Foto
+            </button>
           </div>
 
           {/* Settings Form Card */}
@@ -143,7 +180,11 @@ export default function Profile() {
             </div>
             <div className="bg-error-container/20 border border-error/20 rounded-[14px] p-6 text-center">
               <p className="font-body-md text-body-md text-on-surface-variant mb-6">Tindakan ini tidak dapat dibatalkan. Pastikan Anda telah menyimpan semua tiket aktif Anda.</p>
-              <button className="w-full bg-transparent border-2 border-error text-error py-3 px-6 rounded-full font-body-md font-bold hover:bg-error hover:text-white active:scale-[0.98] transition-all">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full bg-transparent border-2 border-error text-error py-3 px-6 rounded-full font-body-md font-bold hover:bg-error hover:text-white active:scale-[0.98] transition-all"
+              >
                 Keluar dari Akun
               </button>
             </div>
