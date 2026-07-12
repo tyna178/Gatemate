@@ -1,70 +1,68 @@
-import axios from 'axios'
+import axios from 'axios';
+
+// Base URL diambil dari environment variable agar mudah beda antara
+// development (localhost) dan production (server hosting).
+// Buat file .env di root project dan isi:
+// VITE_API_BASE_URL=http://127.0.0.1:8000/api
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Accept': 'application/json',
   },
-  timeout: 10000,
-})
+  withCredentials: true,
+  timeout: 15000, // 15 detik, hindari request menggantung terlalu lama
+});
 
-// Request interceptor - tambah token jika ada
+// Interceptor Request: Sisipkan token dari localStorage ke setiap request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('auth_token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   (error) => Promise.reject(error)
-)
+);
 
-// Response interceptor - handle error global
+// Interceptor Response: Tangani error global
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
+    if (error.response) {
+      const { status } = error.response;
+
+      // 401 -> token invalid/expired, auto logout
+      if (status === 401) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('organizer_profile');
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+      }
+
+      // 403 -> organizer tidak punya izin untuk aksi ini
+      if (status === 403) {
+        console.warn('Akses ditolak: organizer tidak memiliki izin untuk aksi ini.');
+      }
+
+      // 422 -> validasi Laravel gagal, biarkan komponen yang menangani
+      // pesannya (error.response.data.errors), jadi tidak di-handle di sini.
+
+      // 500+ -> error server
+      if (status >= 500) {
+        console.error('Terjadi kesalahan pada server. Coba lagi nanti.');
+      }
+    } else if (error.request) {
+      // Request terkirim tapi tidak ada response (server mati / no internet)
+      console.error('Tidak dapat terhubung ke server. Periksa koneksi Anda.');
     }
-    return Promise.reject(error)
+
+    return Promise.reject(error);
   }
-)
+);
 
-// Auth Services
-export const authService = {
-  login: (credentials) => api.post('/auth/login', credentials),
-  register: (data) => api.post('/auth/register', data),
-  logout: () => api.post('/auth/logout'),
-  me: () => api.get('/auth/me'),
-}
-
-// Event Services
-export const eventService = {
-  getAll: (params) => api.get('/events', { params }),
-  getById: (id) => api.get(`/events/${id}`),
-  create: (data) => api.post('/events', data),
-  update: (id, data) => api.put(`/events/${id}`, data),
-  delete: (id) => api.delete(`/events/${id}`),
-}
-
-// Ticket Services
-export const ticketService = {
-  getMyTickets: () => api.get('/tickets/my'),
-  getById: (id) => api.get(`/tickets/${id}`),
-  purchase: (data) => api.post('/tickets/purchase', data),
-  checkIn: (code) => api.post('/tickets/check-in', { code }),
-}
-
-// User Services
-export const userService = {
-  getAll: () => api.get('/admin/users'),
-  getById: (id) => api.get(`/admin/users/${id}`),
-  update: (id, data) => api.put(`/admin/users/${id}`, data),
-  delete: (id) => api.delete(`/admin/users/${id}`),
-}
-
-export default api
+export default api;
